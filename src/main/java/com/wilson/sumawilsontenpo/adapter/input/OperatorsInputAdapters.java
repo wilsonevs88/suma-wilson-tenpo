@@ -1,24 +1,30 @@
 package com.wilson.sumawilsontenpo.adapter.input;
 
 import com.wilson.sumawilsontenpo.application.port.input.OperadoresInputPort;
-import com.wilson.sumawilsontenpo.application.port.output.models.request.OperatorsRequest;
-import com.wilson.sumawilsontenpo.application.port.output.models.response.BaseOperadoresResponse;
+import com.wilson.sumawilsontenpo.ddr.IDdrPublisher;
+import com.wilson.sumawilsontenpo.entity.UserEntity;
+import com.wilson.sumawilsontenpo.models.request.OperatorsRequest;
+import com.wilson.sumawilsontenpo.models.response.BaseOperadoresResponse;
+import com.wilson.sumawilsontenpo.models.response.BaseUserResponse;
+import com.wilson.sumawilsontenpo.utils.Constants;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("operadores")
@@ -26,13 +32,49 @@ import org.springframework.web.bind.annotation.RestController;
 public class OperatorsInputAdapters {
 
     private final OperadoresInputPort operadoresInputPort;
+    private final IDdrPublisher iDdrPublisher;
 
-    @PostMapping("/operacion")
-    public ResponseEntity<BaseOperadoresResponse> apiRest(
+
+    @GetMapping("/get/operacion/{userid}")
+    public ResponseEntity<BaseUserResponse> getUserId(
+            @PathVariable(value = "userid") Long userId) {
+        log.info("Starting get operator...");
+        var response = operadoresInputPort.getUserId(userId);
+        iDdrPublisher.init(Constants.ACTION_GET, response.getResponseContent().getClientUuid(),
+                response.getResponseContent().getValue(), response.getResponseCode(),
+                response.getResponseDescription());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/list/operacion/{page}/{size}")
+    public ResponseEntity<Page<UserEntity>> completeSearch(
+            @PathVariable(value = "page") Integer page,
+            @PathVariable(value = "size") Integer size) {
+        log.info("Starting get operator...");
+        var response = operadoresInputPort.completeSearch(page, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/get/list/operacion/{page}/{size}/")
+    public ResponseEntity<Page<UserEntity>> listSearchByClientUuid(
+            @PathVariable(value = "page") Integer page,
+            @PathVariable(value = "size") Integer size,
+            @RequestParam(value = "clientuuid") String clientUuid) {
+        log.info("Starting get operator...");
+        var response = operadoresInputPort.listSearchByClientUuid(clientUuid, page, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/save/operacion")
+    public ResponseEntity<BaseOperadoresResponse> saveUser(
             @RequestBody OperatorsRequest request) {
-        log.info("Starting");
-        var operador = operadoresInputPort.sumaAplicandoPorcentaje(request);
-        return new ResponseEntity<>(operador, HttpStatus.OK);
+        log.info("Starting save operator...");
+        var response = operadoresInputPort.saveUser(request);
+        iDdrPublisher.init(Constants.ACTION_SAVE, response.getResponseContent().getClientUuid(),
+                response.getResponseContent().getValue(), response.getResponseCode(),
+                response.getResponseDescription());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

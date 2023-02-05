@@ -1,4 +1,4 @@
-package com.wilson.sumawilsontenpo.application.port.output.models.request;
+package com.wilson.sumawilsontenpo.models.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

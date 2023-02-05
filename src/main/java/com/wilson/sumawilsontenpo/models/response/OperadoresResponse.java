@@ -1,4 +1,4 @@
-package com.wilson.sumawilsontenpo.application.port.output.models.response;
+package com.wilson.sumawilsontenpo.models.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

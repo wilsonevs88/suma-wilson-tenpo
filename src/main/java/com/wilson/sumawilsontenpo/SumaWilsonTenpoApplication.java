@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableFeignClients
 @EnableJpaRepositories(basePackages="com.wilson.sumawilsontenpo.application.port.output.repository")
-@EntityScan(basePackages="com.wilson.sumawilsontenpo.application.port.output.entity")
+@EntityScan(basePackages="com.wilson.sumawilsontenpo.entity")
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class SumaWilsonTenpoApplication {

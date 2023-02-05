@@ -1,4 +1,4 @@
-package com.wilson.sumawilsontenpo.application.port.output.models.request;
+package com.wilson.sumawilsontenpo.models.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -16,7 +16,6 @@ public class OperatorsRequest {
 
     private Double valueUno;
     private Double valueDos;
-    private Double porcentaje;
-    private String clientUuid1;
+    private String clientUuid;
 
 }

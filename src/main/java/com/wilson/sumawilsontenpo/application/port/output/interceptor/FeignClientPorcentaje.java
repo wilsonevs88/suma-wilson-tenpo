@@ -1,8 +1,8 @@
 package com.wilson.sumawilsontenpo.application.port.output.interceptor;
 
 
-import com.wilson.libwilsontenpo.request.PercentageRequestDto;
-import com.wilson.libwilsontenpo.response.BasePercentageResponseDto;
+import com.wilson.sumawilsontenpo.models.request.PercentageRequestDto;
+import com.wilson.sumawilsontenpo.models.response.BasePercentageResponseDto;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
