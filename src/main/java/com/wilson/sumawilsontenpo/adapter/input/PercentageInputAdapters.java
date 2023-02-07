@@ -36,16 +36,16 @@ public class PercentageInputAdapters {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<BasePercentageResponseDto> apiRest(
-            @Valid @RequestHeader(value = "api-auth") String xApiAuth,
-            @Valid @RequestHeader(value = "client-id") String clientId,
+            @Valid @RequestHeader(value = "api-auth", required = false) String xApiAuth,
+            @Valid @RequestHeader(value = "client-id", required = false) String clientId,
             @Valid @RequestBody PercentageRequestDto request) {
         log.info("Starting percentage...");
         var response = percentageInputPort
                 .sumaAplicandoPorcentaje(xApiAuth, clientId, request);
 
         iDdrPublisher.init(Constants.ACTION_PORCENTAGE, response.getResponseContent().getClientUuid(),
-                response.getResponseContent().getValue(), response.getResponseCode(),
-                response.getResponseDescription());
+                response.getResponseContent().getValue(), response.getResponseContent().isStatus(),
+                response.getResponseCode(), response.getResponseDescription());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

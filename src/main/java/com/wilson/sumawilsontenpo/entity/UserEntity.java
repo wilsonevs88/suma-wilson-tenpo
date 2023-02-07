@@ -36,5 +36,6 @@ public class UserEntity {
     @Column(name = "start_date")
     Timestamp startDate;
     private double value;
+    private boolean state;
 
 }

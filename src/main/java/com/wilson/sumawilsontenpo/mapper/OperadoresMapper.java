@@ -15,7 +15,8 @@ public interface OperadoresMapper {
     PercentageRequestDto toPorcentaje(OperatorsFeignClient value);
     @Mappings({
             @Mapping(target = "clientUuid", source = "clientUuid"),
-            @Mapping(target = "value", source = "value")
+            @Mapping(target = "value", source = "value"),
+            @Mapping(target = "status", source = "status"),
     })
     OperadoresResponse toBase(PercentageResponseDto value);
 

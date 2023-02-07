@@ -23,7 +23,7 @@ public class DdrInflater implements IDdrPublisher {
     @Value("${city.utc}")
     private String utc;
 
-    public void init(String action, String clientUuid, double value,
+    public void init(String action, String clientUuid, double value, boolean state,
                      int responseCode, String responseDescription) {
 
         UserEntity userEntity = UserEntity.builder()
@@ -34,6 +34,7 @@ public class DdrInflater implements IDdrPublisher {
                 .responseCode(responseCode)
                 .responseDescription(responseDescription)
                 .localDate(Timestamp.valueOf(LocalDateTime.now((ZoneId.of(cityCountry)))))
+                .state(state)
                 .build();
         userInputPort.saveUser(userEntity);
     }

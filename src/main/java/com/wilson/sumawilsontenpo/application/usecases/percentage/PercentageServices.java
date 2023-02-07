@@ -40,6 +40,7 @@ public class PercentageServices implements PercentageInputPort {
                     .responseContent(PercentageResponseDto.builder()
                             .value(response)
                             .clientUuid(clientId)
+                            .status(false)
                             .build())
                     .build();
         } catch (Exception exception) {

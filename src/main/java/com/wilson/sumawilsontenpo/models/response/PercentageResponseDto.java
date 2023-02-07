@@ -17,5 +17,6 @@ public class PercentageResponseDto {
 
     private String clientUuid;
     private double value;
+    private boolean status;
 
 }

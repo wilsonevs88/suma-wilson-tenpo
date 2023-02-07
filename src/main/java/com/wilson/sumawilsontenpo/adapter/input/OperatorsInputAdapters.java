@@ -2,16 +2,17 @@ package com.wilson.sumawilsontenpo.adapter.input;
 
 import com.wilson.sumawilsontenpo.application.port.input.OperadoresInputPort;
 import com.wilson.sumawilsontenpo.ddr.IDdrPublisher;
-import com.wilson.sumawilsontenpo.entity.UserEntity;
+import com.wilson.sumawilsontenpo.exception.ExceptionReturn;
 import com.wilson.sumawilsontenpo.models.request.OperatorsRequest;
 import com.wilson.sumawilsontenpo.models.response.BaseOperadoresResponse;
+import com.wilson.sumawilsontenpo.models.response.BaseUserPageResponse;
 import com.wilson.sumawilsontenpo.models.response.BaseUserResponse;
 import com.wilson.sumawilsontenpo.utils.Constants;
+import com.wilson.sumawilsontenpo.utils.ResponseCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,19 +36,16 @@ public class OperatorsInputAdapters {
     private final IDdrPublisher iDdrPublisher;
 
 
-    @GetMapping("/get/operacion/{userid}")
+    @GetMapping("/get/operacion/")
     public ResponseEntity<BaseUserResponse> getUserId(
-            @PathVariable(value = "userid") Long userId) {
+            @RequestParam(value = "userid") String userId) {
         log.info("Starting get operator...");
         var response = operadoresInputPort.getUserId(userId);
-        iDdrPublisher.init(Constants.ACTION_GET, response.getResponseContent().getClientUuid(),
-                response.getResponseContent().getValue(), response.getResponseCode(),
-                response.getResponseDescription());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/get/list/operacion/{page}/{size}")
-    public ResponseEntity<Page<UserEntity>> completeSearch(
+    public ResponseEntity<BaseUserPageResponse> completeSearch(
             @PathVariable(value = "page") Integer page,
             @PathVariable(value = "size") Integer size) {
         log.info("Starting get operator...");
@@ -56,10 +54,10 @@ public class OperatorsInputAdapters {
     }
 
     @GetMapping("/get/list/operacion/{page}/{size}/")
-    public ResponseEntity<Page<UserEntity>> listSearchByClientUuid(
+    public ResponseEntity<BaseUserPageResponse> listSearchByClientUuid(
             @PathVariable(value = "page") Integer page,
             @PathVariable(value = "size") Integer size,
-            @RequestParam(value = "clientuuid") String clientUuid) {
+            @RequestParam(value = "clientuuid", required = false) String clientUuid) {
         log.info("Starting get operator...");
         var response = operadoresInputPort.listSearchByClientUuid(clientUuid, page, size);
         return ResponseEntity.ok(response);
@@ -71,8 +69,8 @@ public class OperatorsInputAdapters {
         log.info("Starting save operator...");
         var response = operadoresInputPort.saveUser(request);
         iDdrPublisher.init(Constants.ACTION_SAVE, response.getResponseContent().getClientUuid(),
-                response.getResponseContent().getValue(), response.getResponseCode(),
-                response.getResponseDescription());
+                response.getResponseContent().getValue(), response.getResponseContent().isStatus(),
+                response.getResponseCode(), response.getResponseDescription());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
