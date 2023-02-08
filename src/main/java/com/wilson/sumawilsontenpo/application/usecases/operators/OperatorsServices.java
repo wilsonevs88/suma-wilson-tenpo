@@ -31,6 +31,8 @@ public class OperatorsServices implements OperadoresInputPort {
     private final OperadoresMapper mapper;
     @Value("${api.auth_uno}")
     private String auth;
+    @Value("${max.retries}")
+    private int maxRetries;
 
     @Override
     public BaseUserResponse getUserId(String userId) {
@@ -100,66 +102,70 @@ public class OperatorsServices implements OperadoresInputPort {
 
     @Override
     public BaseOperadoresResponse saveUser(OperatorsRequest request) {
-        try {
-
-            var sum = request.getValueUno() + request.getValueDos();
-            var percentage = sum;
-            var clientId = request.getClientUuid();
-
-            if (clientId.isBlank()) {
-                clientId = generateNameInputPort.getNameFileByTypeComponent();
-            }
-
-            var userExist =
-                    userInputPort.getClientActionAndClientUuidAndState("SAVE", clientId, Boolean.TRUE);
-            log.info("UserExist: {}", userExist);
-
-            if(userExist.size() > 0 || !userExist.isEmpty()) {
-                for (var item : userExist) {
-                    UserEntity userEntity = UserEntity.builder()
-                            .id(item.getId())
-                            .startDate(item.getStartDate())
-                            .action(item.getAction())
-                            .clientUuid(item.getClientUuid())
-                            .value(item.getValue())
-                            .responseCode(item.getResponseCode())
-                            .responseDescription(item.getResponseDescription())
-                            .localDate(item.getLocalDate())
-                            .state(Boolean.FALSE)
-                            .build();
-                    userInputPort.saveUser(userEntity);
-                }
-            }
-
-            OperatorsFeignClient operatorsFeignClient = OperatorsFeignClient.builder()
-                    .valueSuma(sum)
-                    .porcentaje(percentage)
-                    .build();
-
-            log.info("ClientId: {}", clientId);
-            var responseMapper = feignClientPorcentaje.
-                    getPorcentaje(auth, clientId, mapper.toPorcentaje(operatorsFeignClient));
-
-            log.info("responseMapper: {}", responseMapper);
-
-            return BaseOperadoresResponse.builder()
-                    .responseCode(responseMapper.getResponseCode())
-                    .responseDescription(responseMapper.getResponseDescription())
-                    .responseContent(mapper.toBase(PercentageResponseDto.builder()
-                            .value(responseMapper.getResponseContent().getValue())
-                            .clientUuid(responseMapper.getResponseContent().getClientUuid())
-                            .status(Boolean.TRUE)
-                            .build()))
-                    .build();
-
-        } catch (Exception exception) {
-            log.error("Exception => ", exception);
-            return BaseOperadoresResponse.builder()
-                    .responseCode(ResponseCode.CONNECTION_PERCENTAGE_ERROR.getCode())
-                    .responseDescription(ResponseCode.CONNECTION_PERCENTAGE_ERROR.getDescription())
-                    .build();
+        var sum = request.getValueUno() + request.getValueDos();
+        var percentage = sum;
+        var clientId = request.getClientUuid();
+        if (clientId.isBlank()) {
+            clientId = generateNameInputPort.getNameFileByTypeComponent();
         }
 
+        var userExist =
+                userInputPort.getClientActionAndClientUuidAndState("SAVE", clientId, Boolean.TRUE);
+        log.info("UserExist: {}", userExist);
+
+        if (userExist.size() > 0 || !userExist.isEmpty()) {
+            for (var item : userExist) {
+                UserEntity userEntity = UserEntity.builder()
+                        .id(item.getId())
+                        .startDate(item.getStartDate())
+                        .action(item.getAction())
+                        .clientUuid(item.getClientUuid())
+                        .value(item.getValue())
+                        .responseCode(item.getResponseCode())
+                        .responseDescription(item.getResponseDescription())
+                        .localDate(item.getLocalDate())
+                        .state(Boolean.FALSE)
+                        .build();
+                userInputPort.saveUser(userEntity);
+            }
+        }
+
+        int retries = 0;
+        while (retries < maxRetries) {
+            try {
+                OperatorsFeignClient operatorsFeignClient = OperatorsFeignClient.builder()
+                        .valueSuma(sum)
+                        .porcentaje(percentage)
+                        .build();
+
+                log.info("ClientId: {}", clientId);
+                var responseMapper = feignClientPorcentaje.
+                        getPorcentaje(auth, clientId, mapper.toPorcentaje(operatorsFeignClient));
+
+                log.info("responseMapper: {}", responseMapper);
+
+                return BaseOperadoresResponse.builder()
+                        .responseCode(responseMapper.getResponseCode())
+                        .responseDescription(responseMapper.getResponseDescription())
+                        .responseContent(mapper.toBase(PercentageResponseDto.builder()
+                                .value(responseMapper.getResponseContent().getValue())
+                                .clientUuid(responseMapper.getResponseContent().getClientUuid())
+                                .status(Boolean.TRUE)
+                                .build()))
+                        .build();
+            } catch (Exception e) {
+                retries++;
+            }
+
+            log.info("Retries: {}", retries);
+
+            if (retries == 3) {
+                return BaseOperadoresResponse.builder().responseCode(ResponseCode.CONNECTION_PERCENTAGE_ERROR.getCode())
+                        .responseDescription(ResponseCode.CONNECTION_PERCENTAGE_ERROR.getDescription())
+                        .build();
+            }
+        }
+        return null;
     }
 
 }

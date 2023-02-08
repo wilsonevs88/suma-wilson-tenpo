@@ -6,7 +6,6 @@ import static java.util.Objects.nonNull;
 /**
  * <p>Base exception that will be handled by the exception handler controller. Given a {@link
  * ExceptionInformation}, the ExceptionHandlerController will return a response with the given code,
- * description and {@link HttpStatus}.</p>
  * <br>
  * <p>If exists a reporting service (for example:Sentry), registered in the spring application
  * context, if explicity pointed out, the exception will be reported to it by the

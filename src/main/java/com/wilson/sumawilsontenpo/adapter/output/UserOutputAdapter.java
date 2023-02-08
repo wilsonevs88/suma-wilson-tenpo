@@ -76,17 +76,6 @@ public class UserOutputAdapter implements UserInputPort {
 
     @Override
     @Transactional
-    public List<UserEntity> getClientUuidAndState(String clientUuid, boolean state) {
-        try {
-            return repository.findByClientUuidAndState(clientUuid, state);
-        } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE, exception);
-        }
-    }
-
-
-    @Override
-    @Transactional
     public List<UserEntity> getClientActionAndClientUuidAndState(String action, String clientUuid, boolean state) {
         try {
             return repository.findByActionAndClientUuidAndState(action, clientUuid, state);
@@ -114,15 +103,6 @@ public class UserOutputAdapter implements UserInputPort {
             repository.save(user);
         } catch (Exception exception) {
             throw new ExceptionReturn(ResponseCode.ERROR_WHEN_SAVING_A_DATABASE_USER, exception);
-        }
-    }
-
-    @Override
-    public void updateUser(UserEntity user) {
-        try {
-            repository.save(user);
-        } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_UPDATING_A_DATABASE_USER, exception);
         }
     }
 

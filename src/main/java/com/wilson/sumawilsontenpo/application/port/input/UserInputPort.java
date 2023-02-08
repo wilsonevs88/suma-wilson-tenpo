@@ -15,15 +15,10 @@ public interface UserInputPort {
 
     Page<UserEntity> completeSearch(Integer page, Integer size);
 
-    List<UserEntity> getClientUuidAndState(String clientUuid, boolean state);
-
     List<UserEntity> getClientActionAndClientUuidAndState(String action, String clientUuid, boolean state);
-
 
     Page<UserEntity> listSearchByClientUuid(String clientUuid, Integer page, Integer size);
 
     void saveUser(UserEntity user);
-
-    void updateUser(UserEntity user);
 
 }

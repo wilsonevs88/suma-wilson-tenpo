@@ -3,8 +3,10 @@ package com.wilson.sumawilsontenpo.utils;
 import com.wilson.sumawilsontenpo.exception.ExceptionInformation;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum ResponseCode implements ExceptionInformation {
 
     OK(0, "OK", HttpStatus.OK),
@@ -22,22 +24,19 @@ public enum ResponseCode implements ExceptionInformation {
     CONNECTION_PERCENTAGE_ERROR(1092, "PERCENT SERVICE CONNECTION ERROR", HttpStatus.OK),
     ;
 
-    private int code;
-    private String description;
-    private HttpStatus httpStatus;
+    private final int code;
+    private final String description;
+    private final HttpStatus httpStatus;
 
-    ResponseCode(int code, String description, HttpStatus httpStatus) {
-        this.code = code;
-        this.description = description;
-        this.httpStatus = httpStatus;
+    ResponseCode(int code, String description) {
+        this(code, description, HttpStatus.OK);
     }
 
     /**
      * Returns an {@link ExceptionInformation} with the given response code with an additional
      * description.
      */
-    public static ExceptionInformation create(ResponseCode responseCode,
-                                              String additionalDescription) {
+    public static ExceptionInformation create(ResponseCode responseCode, String additionalDescription) {
         return new ExceptionInformation() {
             @Override
             public int getCode() {

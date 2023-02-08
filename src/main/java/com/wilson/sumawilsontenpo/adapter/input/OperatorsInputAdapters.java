@@ -50,7 +50,7 @@ public class OperatorsInputAdapters {
             @PathVariable(value = "size") Integer size) {
         log.info("Starting get operator...");
         var response = operadoresInputPort.completeSearch(page, size);
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/get/list/operacion/{page}/{size}/")
@@ -60,7 +60,7 @@ public class OperatorsInputAdapters {
             @RequestParam(value = "clientuuid", required = false) String clientUuid) {
         log.info("Starting get operator...");
         var response = operadoresInputPort.listSearchByClientUuid(clientUuid, page, size);
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/save/operacion")

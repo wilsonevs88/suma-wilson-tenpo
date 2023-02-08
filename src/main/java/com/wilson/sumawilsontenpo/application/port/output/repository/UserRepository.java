@@ -17,7 +17,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findById(Long userId);
     List<UserEntity> findByState(boolean state);
     List<UserEntity> findByClientUuid(String clientUuid);
-    List<UserEntity> findByClientUuidAndState(String clientUuid, boolean state);
     List<UserEntity> findByActionAndClientUuidAndState(String action, String clientUuid, boolean state);
     Page<UserEntity> findAllByClientUuid(String clientUuid, Pageable pageable);
 
