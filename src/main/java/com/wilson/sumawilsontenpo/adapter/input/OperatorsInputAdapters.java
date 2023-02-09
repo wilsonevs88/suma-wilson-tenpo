@@ -2,13 +2,11 @@ package com.wilson.sumawilsontenpo.adapter.input;
 
 import com.wilson.sumawilsontenpo.application.port.input.OperadoresInputPort;
 import com.wilson.sumawilsontenpo.ddr.IDdrPublisher;
-import com.wilson.sumawilsontenpo.exception.ExceptionReturn;
 import com.wilson.sumawilsontenpo.models.request.OperatorsRequest;
 import com.wilson.sumawilsontenpo.models.response.BaseOperadoresResponse;
 import com.wilson.sumawilsontenpo.models.response.BaseUserPageResponse;
 import com.wilson.sumawilsontenpo.models.response.BaseUserResponse;
 import com.wilson.sumawilsontenpo.utils.Constants;
-import com.wilson.sumawilsontenpo.utils.ResponseCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +36,7 @@ public class OperatorsInputAdapters {
 
     @GetMapping("/get/operacion/")
     public ResponseEntity<BaseUserResponse> getUserId(
-            @RequestParam(value = "userid") String userId) {
+            @RequestParam(value = "userid", required = false) String userId) {
         log.info("Starting get operator...");
         var response = operadoresInputPort.getUserId(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);

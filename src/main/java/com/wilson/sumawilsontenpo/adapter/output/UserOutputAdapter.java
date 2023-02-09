@@ -4,11 +4,10 @@ package com.wilson.sumawilsontenpo.adapter.output;
 import com.wilson.sumawilsontenpo.application.port.input.UserInputPort;
 import com.wilson.sumawilsontenpo.application.port.output.repository.UserRepository;
 import com.wilson.sumawilsontenpo.entity.UserEntity;
-import com.wilson.sumawilsontenpo.exception.ExceptionReturn;
+import com.wilson.sumawilsontenpo.exception.DatosInvalidosExcepcion;
 import com.wilson.sumawilsontenpo.utils.ResponseCode;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,7 @@ public class UserOutputAdapter implements UserInputPort {
                 return null;
             }
         } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE, exception);
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);
         }
     }
 
@@ -48,7 +47,7 @@ public class UserOutputAdapter implements UserInputPort {
         try {
             return repository.findByState(state);
         } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE, exception);
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);
         }
     }
 
@@ -58,8 +57,7 @@ public class UserOutputAdapter implements UserInputPort {
         try {
             return repository.findByClientUuid(clientUuid);
         } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE, exception);
-        }
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);}
     }
 
     @Override
@@ -70,7 +68,7 @@ public class UserOutputAdapter implements UserInputPort {
             log.info("listSearchByClientUuid {}", response);
             return response;
         } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_WHEN_OBTAINING_THE_USER_LIST_FROM_THE_DATABASE, exception);
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_WHEN_OBTAINING_THE_USER_LIST_FROM_THE_DATABASE.getDescription(), exception);
         }
     }
 
@@ -80,7 +78,7 @@ public class UserOutputAdapter implements UserInputPort {
         try {
             return repository.findByActionAndClientUuidAndState(action, clientUuid, state);
         } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE, exception);
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);
         }
     }
 
@@ -93,7 +91,7 @@ public class UserOutputAdapter implements UserInputPort {
             log.info("listSearchByClientUuid {}", response);
             return response;
         } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_WHEN_OBTAINING_THE_USER_LIST_FROM_THE_DATABASE, exception);
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_WHEN_OBTAINING_THE_USER_LIST_FROM_THE_DATABASE.getDescription(), exception);
         }
     }
 
@@ -102,7 +100,7 @@ public class UserOutputAdapter implements UserInputPort {
         try {
             repository.save(user);
         } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.ERROR_WHEN_SAVING_A_DATABASE_USER, exception);
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_WHEN_SAVING_A_DATABASE_USER.getDescription(), exception);
         }
     }
 

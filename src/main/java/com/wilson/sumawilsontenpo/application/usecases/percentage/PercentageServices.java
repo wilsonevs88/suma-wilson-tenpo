@@ -1,7 +1,6 @@
 package com.wilson.sumawilsontenpo.application.usecases.percentage;
 
 import com.wilson.sumawilsontenpo.application.port.input.PercentageInputPort;
-import com.wilson.sumawilsontenpo.exception.ExceptionReturn;
 import com.wilson.sumawilsontenpo.models.request.PercentageRequestDto;
 import com.wilson.sumawilsontenpo.models.response.BasePercentageResponseDto;
 import com.wilson.sumawilsontenpo.models.response.PercentageResponseDto;
@@ -12,6 +11,7 @@ import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +25,35 @@ public class PercentageServices implements PercentageInputPort {
     @Override
     public BasePercentageResponseDto sumaAplicandoPorcentaje(String xApiAuth, String clientId, PercentageRequestDto request) {
 
-        try {
-            if (!xApiAuth.equals(auth)) {
-                         return BasePercentageResponseDto.builder()
-                        .responseCode(ResponseCode.AUTH_ERROR.getCode())
-                        .responseDescription(ResponseCode.AUTH_ERROR.getDescription())
-                        .build();
-            }
+        if (StringUtils.isBlank(xApiAuth)) {
+            return BasePercentageResponseDto.builder()
+                    .responseCode(ResponseCode.MISSING_ENTER_API_AUTH.getCode())
+                    .responseDescription(ResponseCode.MISSING_ENTER_API_AUTH.getDescription())
+                    .build();
+        }
+
+        if (StringUtils.isBlank(clientId)) {
+            return BasePercentageResponseDto.builder()
+                    .responseCode(ResponseCode.MISSING_ENTER_CLIENT_ID.getCode())
+                    .responseDescription(ResponseCode.MISSING_ENTER_CLIENT_ID.getDescription())
+                    .build();
+        }
+
+        if (request.getValueSuma() < 0) {
+            return BasePercentageResponseDto.builder()
+                    .responseCode(ResponseCode.MISSING_ENTER_SUM_VALUE.getCode())
+                    .responseDescription(ResponseCode.MISSING_ENTER_SUM_VALUE.getDescription())
+                    .build();
+        }
+
+        if (request.getPorcentaje() < 0) {
+            return BasePercentageResponseDto.builder()
+                    .responseCode(ResponseCode.MISSING_ENTER_PERCENTAGE_VALUE.getCode())
+                    .responseDescription(ResponseCode.MISSING_ENTER_PERCENTAGE_VALUE.getDescription())
+                    .build();
+        }
+
+        if (xApiAuth.equals(auth)) {
             var percentage = getPercentage(request);
             var response = getDecimal(percentage);
             return BasePercentageResponseDto.builder()
@@ -43,8 +65,11 @@ public class PercentageServices implements PercentageInputPort {
                             .status(false)
                             .build())
                     .build();
-        } catch (Exception exception) {
-            throw new ExceptionReturn(ResponseCode.CONNECTION_ERROR, exception);
+        } else {
+            return BasePercentageResponseDto.builder()
+                    .responseCode(ResponseCode.AUTH_ERROR.getCode())
+                    .responseDescription(ResponseCode.AUTH_ERROR.getDescription())
+                    .build();
         }
 
     }

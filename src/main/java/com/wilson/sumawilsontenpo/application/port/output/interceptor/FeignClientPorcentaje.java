@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -19,7 +20,7 @@ public interface FeignClientPorcentaje {
             produces = APPLICATION_JSON_VALUE)
     BasePercentageResponseDto getPorcentaje(
             @RequestHeader(value = "api-auth") String xApiAuth,
-            @RequestHeader(value = "client-id") String clientId,
+            @RequestParam(value = "client-id") String clientId,
             @RequestBody PercentageRequestDto request);
 
 }

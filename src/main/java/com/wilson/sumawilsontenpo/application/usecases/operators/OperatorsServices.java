@@ -17,6 +17,7 @@ import com.wilson.sumawilsontenpo.utils.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,14 @@ public class OperatorsServices implements OperadoresInputPort {
 
     @Override
     public BaseUserResponse getUserId(String userId) {
+
+        if (StringUtils.isBlank(userId)) {
+            return BaseUserResponse.builder()
+                    .responseCode(ResponseCode.MISSING_ENTER_USER_ID.getCode())
+                    .responseDescription(ResponseCode.MISSING_ENTER_USER_ID.getDescription())
+                    .build();
+        }
+
         var response = userInputPort.getClientUuid(userId);
         log.info("1. getUserId: {}", response);
         return BaseUserResponse.builder()
@@ -47,12 +56,7 @@ public class OperatorsServices implements OperadoresInputPort {
 
     @Override
     public BaseUserPageResponse completeSearch(Integer page, Integer size) {
-        if (size == null || size <= 0) {
-            return BaseUserPageResponse.builder()
-                    .responseCode(ResponseCode.ENTERED_NUMBER_MUST_BE_GREATER_THAN_0.getCode())
-                    .responseDescription(ResponseCode.ENTERED_NUMBER_MUST_BE_GREATER_THAN_0.getDescription())
-                    .build();
-        }
+
         var response = userInputPort.completeSearch(page, size);
         log.info("Response page<UserEntity> {}", response);
         if (size > response.getTotalElements()) {
@@ -71,7 +75,15 @@ public class OperatorsServices implements OperadoresInputPort {
 
     @Override
     public BaseUserPageResponse listSearchByClientUuid(String clientUuid, Integer page, Integer size) {
-        if (size == null || size <= 0) {
+
+        if (StringUtils.isBlank(clientUuid)) {
+            return BaseUserPageResponse.builder()
+                    .responseCode(ResponseCode.MISSING_ENTER_CLIENT_ID.getCode())
+                    .responseDescription(ResponseCode.MISSING_ENTER_CLIENT_ID.getDescription())
+                    .build();
+        }
+
+        if (size <= 0) {
             return BaseUserPageResponse.builder()
                     .responseCode(ResponseCode.ENTERED_NUMBER_MUST_BE_GREATER_THAN_0.getCode())
                     .responseDescription(ResponseCode.ENTERED_NUMBER_MUST_BE_GREATER_THAN_0.getDescription())
@@ -102,6 +114,25 @@ public class OperatorsServices implements OperadoresInputPort {
 
     @Override
     public BaseOperadoresResponse saveUser(OperatorsRequest request) {
+
+        if (StringUtils.isBlank(request.getClientUuid())) {
+            return BaseOperadoresResponse.builder().responseCode(ResponseCode.MISSING_ENTER_CLIENT_ID.getCode())
+                    .responseDescription(ResponseCode.MISSING_ENTER_CLIENT_ID.getDescription())
+                    .build();
+        }
+
+        if (request.getValueUno() == null) {
+            return BaseOperadoresResponse.builder().responseCode(ResponseCode.NECESSARY_TO_ENTER_VALUE_ONE.getCode())
+                    .responseDescription(ResponseCode.NECESSARY_TO_ENTER_VALUE_ONE.getDescription())
+                    .build();
+        }
+
+        if (request.getValueDos() == null) {
+            return BaseOperadoresResponse.builder().responseCode(ResponseCode.NECESSARY_TO_ENTER_VALUE_TWO.getCode())
+                    .responseDescription(ResponseCode.NECESSARY_TO_ENTER_VALUE_TWO.getDescription())
+                    .build();
+        }
+
         var sum = request.getValueUno() + request.getValueDos();
         var percentage = sum;
         var clientId = request.getClientUuid();
@@ -115,7 +146,7 @@ public class OperatorsServices implements OperadoresInputPort {
 
         if (userExist.size() > 0 || !userExist.isEmpty()) {
             for (var item : userExist) {
-                UserEntity userEntity = UserEntity.builder()
+                userInputPort.saveUser(UserEntity.builder()
                         .id(item.getId())
                         .startDate(item.getStartDate())
                         .action(item.getAction())
@@ -125,8 +156,7 @@ public class OperatorsServices implements OperadoresInputPort {
                         .responseDescription(item.getResponseDescription())
                         .localDate(item.getLocalDate())
                         .state(Boolean.FALSE)
-                        .build();
-                userInputPort.saveUser(userEntity);
+                        .build());
             }
         }
 
@@ -139,11 +169,15 @@ public class OperatorsServices implements OperadoresInputPort {
                         .build();
 
                 log.info("ClientId: {}", clientId);
+                var xAuth = auth;
+
+                if(retries == 2){
+                    xAuth = "wilson3042258679";
+                }
+
                 var responseMapper = feignClientPorcentaje.
-                        getPorcentaje(auth, clientId, mapper.toPorcentaje(operatorsFeignClient));
-
+                        getPorcentaje(xAuth, clientId, mapper.toPorcentaje(operatorsFeignClient));
                 log.info("responseMapper: {}", responseMapper);
-
                 return BaseOperadoresResponse.builder()
                         .responseCode(responseMapper.getResponseCode())
                         .responseDescription(responseMapper.getResponseDescription())
@@ -154,11 +188,11 @@ public class OperatorsServices implements OperadoresInputPort {
                                 .build()))
                         .build();
             } catch (Exception e) {
+                log.error("Exception: {}", e.getMessage());
+            } finally {
                 retries++;
+                log.info("Retries: {}", retries);
             }
-
-            log.info("Retries: {}", retries);
-
             if (retries == 3) {
                 return BaseOperadoresResponse.builder().responseCode(ResponseCode.CONNECTION_PERCENTAGE_ERROR.getCode())
                         .responseDescription(ResponseCode.CONNECTION_PERCENTAGE_ERROR.getDescription())
