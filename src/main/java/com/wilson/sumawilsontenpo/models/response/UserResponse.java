@@ -11,18 +11,20 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
 
     private Long id;
-    String action;
     private String clientUuid;
+    private String action;
     private double value;
+    private boolean state;
     private int responseCode;
     private String responseDescription;
-    Timestamp startDate;
-    Timestamp localDate;
+    private Timestamp startDate;
+    private Timestamp localDate;
+    private String expiration;
 
 }

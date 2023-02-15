@@ -27,9 +27,9 @@ public class UserOutputAdapter implements UserOutputPort {
 
     @Override
     @Transactional
-    public UserEntity getUserId(Long userId) {
+    public UserEntity getUserId(Long id) {
         try {
-            var response = repository.findById(userId);
+            var response = repository.findById(id);
             log.info("getUserId {}", response.get());
             if (response.isPresent()) {
                 return response.get();
@@ -57,7 +57,18 @@ public class UserOutputAdapter implements UserOutputPort {
         try {
             return repository.findByClientUuid(clientUuid);
         } catch (Exception exception) {
-            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);}
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);
+        }
+    }
+
+    @Override
+    @Transactional
+    public UserEntity getClientUuidAndState(String clientUuid, Boolean state) {
+        try {
+            return repository.findByClientUuidAndState(clientUuid, state);
+        } catch (Exception exception) {
+            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);
+        }
     }
 
     @Override

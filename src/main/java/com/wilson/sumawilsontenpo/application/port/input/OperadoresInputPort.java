@@ -14,6 +14,6 @@ public interface OperadoresInputPort {
     BaseUserPageResponse listSearchByClientUuid(String clientUuid, Integer page, Integer size);
 
     BaseOperadoresResponse saveUser(OperatorsRequest request);
-    BaseOperadoresResponse saveUserTwo(OperatorsRequest request);
+
 
 }

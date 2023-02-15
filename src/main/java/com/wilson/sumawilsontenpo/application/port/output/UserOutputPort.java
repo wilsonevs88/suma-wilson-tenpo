@@ -8,10 +8,12 @@ import org.springframework.data.domain.Page;
 
 public interface UserOutputPort {
 
-    UserEntity getUserId(Long userId);
+    UserEntity getUserId(Long id);
+
     List<UserEntity> getState(boolean state);
 
     List<UserEntity> getClientUuid(String clientUuid);
+    UserEntity getClientUuidAndState(String clientUuid, Boolean state);
 
     Page<UserEntity> completeSearch(Integer page, Integer size);
 

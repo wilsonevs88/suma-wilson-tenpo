@@ -25,17 +25,17 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    String action;
     @Column(name = "client_uuid")
     private String clientUuid;
-    Timestamp localDate;
+    String action;
+    private double value;
+    private boolean state;
     @Column(name = "response_code")
     private int responseCode;
     @Column(name = "response_description")
     private String responseDescription;
     @Column(name = "start_date")
     Timestamp startDate;
-    private double value;
-    private boolean state;
+    Timestamp localDate;
 
 }

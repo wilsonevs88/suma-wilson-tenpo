@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OperadoresResponse {
 
     private String clientUuid;
     private double value;
     private boolean status;
-    private String expiration;
 
 }

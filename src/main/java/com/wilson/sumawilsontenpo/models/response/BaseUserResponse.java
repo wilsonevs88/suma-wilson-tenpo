@@ -1,9 +1,6 @@
 package com.wilson.sumawilsontenpo.models.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wilson.sumawilsontenpo.entity.UserEntity;
-
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +16,6 @@ public class BaseUserResponse {
 
     private Integer responseCode;
     private String responseDescription;
-    private List<UserEntity> responseContent;
+    private UserResponse responseContent;
 
 }

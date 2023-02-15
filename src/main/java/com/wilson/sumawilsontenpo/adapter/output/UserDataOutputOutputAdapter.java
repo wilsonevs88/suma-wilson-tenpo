@@ -49,6 +49,7 @@ public class UserDataOutputOutputAdapter implements UserDataOutputPort {
             var segundosRestantes = segundos % 60;
             return minutos + " minutos y " + segundosRestantes + " segundos";
         } catch (Exception ex) {
+            log.error("Error: {}", ex);
             throw new DatosInvalidosExcepcion(ResponseCode.FAILURE_CHECKING_SESSION_REDIS.getDescription(), ex);
         }
     }
@@ -64,6 +65,7 @@ public class UserDataOutputOutputAdapter implements UserDataOutputPort {
                     timeoutMinutes,
                     TimeUnit.MINUTES);
         } catch (Exception ex) {
+            log.error("Error: {}", ex);
             throw new DatosInvalidosExcepcion(ResponseCode.FAILURE_ADDING_COUNTER_REDIS.getDescription(), ex);
         }
     }
