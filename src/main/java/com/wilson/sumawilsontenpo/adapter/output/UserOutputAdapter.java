@@ -1,7 +1,7 @@
 package com.wilson.sumawilsontenpo.adapter.output;
 
 
-import com.wilson.sumawilsontenpo.application.port.input.UserInputPort;
+import com.wilson.sumawilsontenpo.application.port.output.UserOutputPort;
 import com.wilson.sumawilsontenpo.application.port.output.repository.UserRepository;
 import com.wilson.sumawilsontenpo.entity.UserEntity;
 import com.wilson.sumawilsontenpo.exception.DatosInvalidosExcepcion;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class UserOutputAdapter implements UserInputPort {
+public class UserOutputAdapter implements UserOutputPort {
 
     private final UserRepository repository;
 

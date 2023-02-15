@@ -1,4 +1,4 @@
-package com.wilson.sumawilsontenpo.application.port.input;
+package com.wilson.sumawilsontenpo.application.port.output;
 
 import com.wilson.sumawilsontenpo.entity.UserEntity;
 
@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-public interface UserInputPort {
+public interface UserOutputPort {
 
     UserEntity getUserId(Long userId);
     List<UserEntity> getState(boolean state);

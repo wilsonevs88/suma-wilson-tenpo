@@ -1,12 +1,16 @@
 package com.wilson.sumawilsontenpo.adapter.input;
 
+import com.wilson.sumawilsontenpo.adapter.output.UserDataOutputOutputAdapter;
 import com.wilson.sumawilsontenpo.application.port.input.OperadoresInputPort;
 import com.wilson.sumawilsontenpo.ddr.IDdrPublisher;
+import com.wilson.sumawilsontenpo.mapper.OperadoresMapper;
 import com.wilson.sumawilsontenpo.models.request.OperatorsRequest;
 import com.wilson.sumawilsontenpo.models.response.BaseOperadoresResponse;
 import com.wilson.sumawilsontenpo.models.response.BaseUserPageResponse;
 import com.wilson.sumawilsontenpo.models.response.BaseUserResponse;
+import com.wilson.sumawilsontenpo.models.response.OperadoresResponse;
 import com.wilson.sumawilsontenpo.utils.Constants;
+import com.wilson.sumawilsontenpo.utils.ResponseCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +35,32 @@ import org.springframework.web.bind.annotation.RestController;
 public class OperatorsInputAdapters {
 
     private final OperadoresInputPort operadoresInputPort;
+    private final UserDataOutputOutputAdapter userDataOutputOutputAdapter;
     private final IDdrPublisher iDdrPublisher;
+    private final OperadoresMapper mapper;
+
+
+    @GetMapping("/get/prueba/")
+    public ResponseEntity<BaseOperadoresResponse> prueba(
+            @RequestParam(value = "userid", required = false) String userId) {
+        log.info("Starting get operator...");
+        var responseGet = userDataOutputOutputAdapter.get(userId);
+        var responseExpiration = userDataOutputOutputAdapter.getTime(userId);
+
+        var responseBase = BaseOperadoresResponse.builder()
+                .responseCode(ResponseCode.OK.getCode())
+                .responseDescription(ResponseCode.OK.getDescription())
+                .responseContent(OperadoresResponse.builder()
+                        .clientUuid(responseGet.getClientUuid())
+                        .value(Double.parseDouble(responseGet.getValue()))
+                        .expiration(responseExpiration)
+                        .build())
+                .build();
+        log.info("ResponseGet {}", responseGet);
+        log.info("ResponseExpiration {}", responseExpiration);
+        log.info("Ending get operator...");
+        return new ResponseEntity<>(responseBase, HttpStatus.OK);
+    }
 
 
     @GetMapping("/get/operacion/")
@@ -65,7 +94,7 @@ public class OperatorsInputAdapters {
     public ResponseEntity<BaseOperadoresResponse> saveUser(
             @RequestBody OperatorsRequest request) {
         log.info("Starting save operator...");
-        var response = operadoresInputPort.saveUser(request);
+        var response = operadoresInputPort.saveUserTwo(request);
         iDdrPublisher.init(Constants.ACTION_SAVE, response.getResponseContent().getClientUuid(),
                 response.getResponseContent().getValue(), response.getResponseContent().isStatus(),
                 response.getResponseCode(), response.getResponseDescription());

@@ -17,5 +17,6 @@ public class OperadoresResponse {
     private String clientUuid;
     private double value;
     private boolean status;
+    private String expiration;
 
 }

@@ -1,5 +1,6 @@
 package com.wilson.sumawilsontenpo.mapper;
 
+import com.wilson.sumawilsontenpo.models.UserDataRedis;
 import com.wilson.sumawilsontenpo.models.request.OperatorsFeignClient;
 import com.wilson.sumawilsontenpo.models.request.PercentageRequestDto;
 import com.wilson.sumawilsontenpo.models.response.OperadoresResponse;
@@ -19,5 +20,8 @@ public interface OperadoresMapper {
             @Mapping(target = "status", source = "status"),
     })
     OperadoresResponse toBase(PercentageResponseDto value);
+
+    UserDataRedis toUserDataRedis(PercentageResponseDto value);
+    OperadoresResponse toUserDataRedis(UserDataRedis value);
 
 }

@@ -24,7 +24,13 @@ public enum ResponseCode implements ExceptionInformation {
     WE_DO_NOT_HAVE_THAT_NUMBER_OF_RECORDS(1021, "WE DO NOT HAVE THAT NUMBER OF RECORDS", HttpStatus.OK),
     ENTERED_NUMBER_MUST_BE_GREATER_THAN_0(1022, "ENTERED NUMBER MUST BE GREATER THAN 0", HttpStatus.OK),
     AUTH_ERROR(1023, "AUTH ERROR", HttpStatus.OK),
-    CONNECTION_PERCENTAGE_ERROR(1024, "PERCENT SERVICE CONNECTION ERROR", HttpStatus.OK);
+    CONNECTION_PERCENTAGE_ERROR(1024, "PERCENT SERVICE CONNECTION ERROR", HttpStatus.OK),
+    FAILURE_GETTING_COUNTER_REDIS(3001, "Failure getting counter to the redis queue", HttpStatus.OK),
+    FAILURE_CHECKING_SESSION_REDIS(3002, "Failure checking session to the redis queue",HttpStatus.OK),
+    FAILURE_ADDING_COUNTER_REDIS(3003, "Failure adding counter to the redis queue", HttpStatus.OK),
+    FAILURE_UPDATING_COUNTER_REDIS(3104, "Failure updating counter to the redis queue", HttpStatus.OK),
+    FAILURE_DELETING_COUNTER_REDIS(3005, "Failure deleting counter within redis queue", HttpStatus.OK),
+    ;
 
     private final int code;
     private final String description;

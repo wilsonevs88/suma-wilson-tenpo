@@ -1,6 +1,6 @@
 package com.wilson.sumawilsontenpo.ddr;
 
-import com.wilson.sumawilsontenpo.application.port.input.UserInputPort;
+import com.wilson.sumawilsontenpo.application.port.output.UserOutputPort;
 import com.wilson.sumawilsontenpo.entity.UserEntity;
 
 import java.sql.Timestamp;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DdrInflater implements IDdrPublisher {
 
-    private final UserInputPort userInputPort;
+    private final UserOutputPort userOutputPort;
     @Value("${city.country}")
     private String cityCountry;
     @Value("${city.utc}")
@@ -36,7 +36,7 @@ public class DdrInflater implements IDdrPublisher {
                 .localDate(Timestamp.valueOf(LocalDateTime.now((ZoneId.of(cityCountry)))))
                 .state(state)
                 .build();
-        userInputPort.saveUser(userEntity);
+        userOutputPort.saveUser(userEntity);
     }
 
 }
