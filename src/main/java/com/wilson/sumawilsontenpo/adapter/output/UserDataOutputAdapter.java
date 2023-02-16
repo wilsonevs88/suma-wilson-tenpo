@@ -3,6 +3,7 @@ package com.wilson.sumawilsontenpo.adapter.output;
 import com.wilson.sumawilsontenpo.application.port.output.UserDataOutputPort;
 import com.wilson.sumawilsontenpo.exception.DatosInvalidosExcepcion;
 import com.wilson.sumawilsontenpo.models.UserDataRedis;
+import com.wilson.sumawilsontenpo.models.UserDataRetryRedis;
 import com.wilson.sumawilsontenpo.utils.ResponseCode;
 
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class UserDataOutputOutputAdapter implements UserDataOutputPort {
+public class UserDataOutputAdapter implements UserDataOutputPort {
 
     @Qualifier("userDataRedisTemplate")
     private final RedisTemplate<String, UserDataRedis> redisTemplate;

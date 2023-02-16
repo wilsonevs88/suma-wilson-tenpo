@@ -3,7 +3,9 @@ package com.wilson.sumawilsontenpo.config.redis;
 import com.wilson.sumawilsontenpo.config.properties.RedisLettuceProperties;
 import com.wilson.sumawilsontenpo.config.properties.RedisProperties;
 import com.wilson.sumawilsontenpo.config.seralizer.UserDataRedisSerializer;
+import com.wilson.sumawilsontenpo.config.seralizer.UserDataRetryRedisSerializer;
 import com.wilson.sumawilsontenpo.models.UserDataRedis;
+import com.wilson.sumawilsontenpo.models.UserDataRetryRedis;
 
 import javax.validation.Valid;
 import java.time.Duration;
@@ -107,5 +109,26 @@ public class RedisConfig {
         template.afterPropertiesSet();
         return template;
     }
+
+    /**
+     * RedisTemplate RetriesCounter which adds a prefix to the key.
+     *
+     * @param connectionFactory Create a connection with a provider.
+     * @return {@link RedisTemplate}
+     */
+    @Bean("userDataRetryRedisTemplate")
+    public RedisTemplate<String, UserDataRetryRedis> userDataRetryRedisTemplate(
+            @Qualifier("initialValidateConnection") RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, UserDataRetryRedis> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new GenericJackson2JsonRedisSerializer());
+        template.setValueSerializer(new UserDataRetryRedisSerializer());
+        template.setEnableDefaultSerializer(true);
+        template.afterPropertiesSet();
+        return template;
+    }
+
 
 }
