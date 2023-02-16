@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,9 +47,10 @@ public class OperatorsInputAdapters {
 
     @PostMapping("/save/operacion")
     public ResponseEntity<BaseOperadoresResponse> saveUser(
+            @RequestHeader(value = "xauth") String x_auth,
             @RequestBody OperatorsRequest request) {
         log.info("Starting save operator...");
-        var response = operadoresInputPort.saveUser(request);
+        var response = operadoresInputPort.saveUser(x_auth, request);
         iDdrPublisher.init(Constants.ACTION_SAVE, response.getResponseContent().getClientUuid(),
                 response.getResponseContent().getValue(), response.getResponseContent().isStatus(),
                 response.getResponseCode(), response.getResponseDescription());

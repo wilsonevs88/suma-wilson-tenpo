@@ -8,7 +8,7 @@ public interface OperadoresInputPort {
 
     BaseUserResponse getUserId(String userId);
 
-    BaseOperadoresResponse saveUser(OperatorsRequest request);
+    BaseOperadoresResponse saveUser(String x_auth, OperatorsRequest request);
 
 
 }

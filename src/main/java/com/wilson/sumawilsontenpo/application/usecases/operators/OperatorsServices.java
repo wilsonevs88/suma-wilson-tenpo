@@ -81,7 +81,7 @@ public class OperatorsServices implements OperadoresInputPort {
     }
 
     @Override
-    public BaseOperadoresResponse saveUser(OperatorsRequest request) {
+    public BaseOperadoresResponse saveUser(String x_auth, OperatorsRequest request) {
         var responseMapper = BasePercentageResponseDto.builder().build();
         if (request.getValueUno() == null) {
             return BaseOperadoresResponse.builder()
@@ -111,12 +111,8 @@ public class OperatorsServices implements OperadoresInputPort {
 
                 OperatorsFeignClient operatorsFeignClient = OperatorsFeignClient.builder()
                         .valueSuma(sum).porcentaje(percentage).build();
-                var xAuth = auth;
-                if (retries == 2) {
-                    xAuth = "wilson3042258679";
-                }
 
-                responseMapper = feignClientPorcentaje.getPorcentaje(xAuth, clientId, mapper.toPorcentaje(operatorsFeignClient));
+                responseMapper = feignClientPorcentaje.getPorcentaje(x_auth, clientId, mapper.toPorcentaje(operatorsFeignClient));
 
             } catch (Exception e) {
                 log.error("Exception: {}", e.getMessage());
