@@ -65,12 +65,6 @@ public class OperatorsServices implements OperadoresInputPort {
             } else {
 
                 if (getRetry.getRetry() >= maxRetries) {
-                    getUserDataRetryRedis = UserDataRetryRedis.builder()
-                            .clientUuid(getRetry.getClientUuid())
-                            .retry(0)
-                            .status(true)
-                            .build();
-                    redisRetry.setRetry(userId, sessionRetryDurationMinutes, getUserDataRetryRedis);
                     return BaseUserResponse.builder()
                             .responseCode(ResponseCode.MAXIMUM_QUERIES_PER_MINUTE.getCode())
                             .responseDescription(ResponseCode.MAXIMUM_QUERIES_PER_MINUTE.getDescription())
@@ -166,12 +160,6 @@ public class OperatorsServices implements OperadoresInputPort {
             } else {
 
                 if (getRetry.getRetry() >= maxRetries) {
-                    getUserDataRetryRedis = UserDataRetryRedis.builder()
-                            .clientUuid(request.getClientUuid())
-                            .retry(0)
-                            .status(true)
-                            .build();
-                    redisRetry.setRetry(clientId, sessionRetryDurationMinutes, getUserDataRetryRedis);
                     return BaseOperadoresResponse.builder()
                             .responseCode(ResponseCode.USER_BLOCKED.getCode())
                             .responseDescription(ResponseCode.USER_BLOCKED.getDescription())
