@@ -32,6 +32,7 @@ public class UserDataOutputOutputAdapter implements UserDataOutputPort {
             log.info("Obteniendo datos del usuario: {}", idUser);
             getConection();
             var get = getKey(idUser);
+            log.info("Get redis: {}", get);
             return redisTemplate.opsForValue().get(get);
         } catch (Exception ex) {
             log.error("Error: {}", ex);
@@ -99,7 +100,8 @@ public class UserDataOutputOutputAdapter implements UserDataOutputPort {
     }
 
     private String getKey(final String idUser) {
-        return String.format(getKeyNameRedis, idUser);
+        var response = String.format("%s_%s", getKeyNameRedis, idUser);
+        return response;
     }
 
     private void getConection() {

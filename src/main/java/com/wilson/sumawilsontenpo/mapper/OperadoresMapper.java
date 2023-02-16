@@ -4,8 +4,10 @@ import com.wilson.sumawilsontenpo.entity.UserEntity;
 import com.wilson.sumawilsontenpo.models.UserDataRedis;
 import com.wilson.sumawilsontenpo.models.request.OperatorsFeignClient;
 import com.wilson.sumawilsontenpo.models.request.PercentageRequestDto;
+import com.wilson.sumawilsontenpo.models.request.UserSession;
 import com.wilson.sumawilsontenpo.models.response.OperadoresResponse;
 import com.wilson.sumawilsontenpo.models.response.PercentageResponseDto;
+import com.wilson.sumawilsontenpo.models.response.SessionResponse;
 import com.wilson.sumawilsontenpo.models.response.UserResponse;
 
 import org.mapstruct.Mapper;
@@ -24,9 +26,12 @@ public interface OperadoresMapper {
 
     PercentageRequestDto toPorcentaje(OperatorsFeignClient value);
 
-    UserDataRedis toUserDataRedis(PercentageResponseDto value);
+    UserDataRedis toUserDataRedisAndUserDataRedis(PercentageResponseDto value);
 
-    UserResponse toUserDataRedis(UserDataRedis value);
+    UserResponse toUserDataRedisUserResponse(UserDataRedis value);
+
+    UserDataRedis toUserDataRedisAndUserSession(UserSession value);
+    SessionResponse toUserSessionAndUserDataRedis(UserDataRedis value);
 
     @Mappings({
             @Mapping(target = "expiration"),
