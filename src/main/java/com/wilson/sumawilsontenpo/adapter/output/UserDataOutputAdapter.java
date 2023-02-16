@@ -3,7 +3,6 @@ package com.wilson.sumawilsontenpo.adapter.output;
 import com.wilson.sumawilsontenpo.application.port.output.UserDataOutputPort;
 import com.wilson.sumawilsontenpo.exception.DatosInvalidosExcepcion;
 import com.wilson.sumawilsontenpo.models.UserDataRedis;
-import com.wilson.sumawilsontenpo.models.UserDataRetryRedis;
 import com.wilson.sumawilsontenpo.utils.ResponseCode;
 
 import java.util.concurrent.TimeUnit;

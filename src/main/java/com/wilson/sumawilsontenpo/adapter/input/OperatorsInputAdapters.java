@@ -40,11 +40,11 @@ public class OperatorsInputAdapters {
         log.info("Starting get operator...");
         var response = operadoresInputPort.getUserId(userId);
 
-        if(response.getResponseCode() == 0) {
+        if (response.getResponseCode() == 0) {
             iDdrPublisher.init(Constants.ACTION_GET, response.getResponseContent().getClientUuid(),
                     response.getResponseContent().getValue(), response.getResponseContent().isState(),
                     response.getResponseCode(), response.getResponseDescription());
-        }else{
+        } else {
             iDdrPublisher.init(Constants.ACTION_SAVE, userId, 0, Boolean.FALSE,
                     response.getResponseCode(), response.getResponseDescription());
         }
@@ -57,11 +57,11 @@ public class OperatorsInputAdapters {
             @RequestBody OperatorsRequest request) {
         log.info("Starting save operator...");
         var response = operadoresInputPort.saveUser(x_auth, request);
-        if(response.getResponseCode() == 0) {
+        if (response.getResponseCode() == 0) {
             iDdrPublisher.init(Constants.ACTION_SAVE, response.getResponseContent().getClientUuid(),
                     response.getResponseContent().getValue(), response.getResponseContent().isStatus(),
                     response.getResponseCode(), response.getResponseDescription());
-        }else{
+        } else {
             iDdrPublisher.init(Constants.ACTION_SAVE, request.getClientUuid(),
                     request.getValueUno() + request.getValueDos(), Boolean.FALSE,
                     response.getResponseCode(), response.getResponseDescription());
