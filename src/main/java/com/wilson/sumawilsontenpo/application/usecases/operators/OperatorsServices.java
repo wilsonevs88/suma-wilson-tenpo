@@ -30,8 +30,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OperatorsServices implements OperadoresInputPort {
 
-    private final UserDataOutputPort redis;
-    private final UserDataRetryOutputPort redisRetry;
+    private final UserDataOutputPort userDataOutputPort;
+    private final UserDataRetryOutputPort userDataRetryOutputPort;
     private final FeignClientPorcentaje feignClientPorcentaje;
     private final GenerateNameInputPort generateNameInputPort;
     private final UserOutputPort userOutputPort;
@@ -48,11 +48,11 @@ public class OperatorsServices implements OperadoresInputPort {
 
 
         var response = BaseUserResponse.builder().build();
-        var getUserIdRedis = redis.get(userId);
+        var getUserIdRedis = userDataOutputPort.get(userId);
         var getUserIdData = userOutputPort.getClientUuidAndState(userId, true);
         if (getUserIdRedis.getClientUuid() != null) {
 
-            var getRetry = redisRetry.getRetry(userId);
+            var getRetry = userDataRetryOutputPort.getRetry(userId);
             var getUserDataRetryRedis = UserDataRetryRedis.builder().build();
 
             if (getRetry == null) {
@@ -61,7 +61,7 @@ public class OperatorsServices implements OperadoresInputPort {
                         .retry(1)
                         .status(false)
                         .build();
-                redisRetry.setRetry(userId, sessionRetryDurationMinutes, getUserDataRetryRedis);
+                userDataRetryOutputPort.setRetry(userId, sessionRetryDurationMinutes, getUserDataRetryRedis);
             } else {
 
                 if (getRetry.getRetry() >= maxRetries) {
@@ -76,11 +76,11 @@ public class OperatorsServices implements OperadoresInputPort {
                         .retry(getRetry.getRetry() + 1)
                         .status(false)
                         .build();
-                redisRetry.setRetry(userId, sessionRetryDurationMinutes, getUserDataRetryRedis);
+                userDataRetryOutputPort.setRetry(userId, sessionRetryDurationMinutes, getUserDataRetryRedis);
             }
 
 
-            var getTime = redis.getTime(userId);
+            var getTime = userDataOutputPort.getTime(userId);
             response = BaseUserResponse.builder().responseCode(ResponseCode.OK.getCode())
                     .responseDescription(ResponseCode.OK.getDescription())
                     .responseContent(mapper.toUserDataRedisUserResponse(UserDataRedis.builder().id(getUserIdData.getId())
@@ -147,7 +147,7 @@ public class OperatorsServices implements OperadoresInputPort {
         responseMapper = feignClientPorcentaje.getPorcentaje(x_auth, clientId, mapper.toPorcentaje(operatorsFeignClient));
 
         if (responseMapper.getResponseCode() == 1023) {
-            var getRetry = redisRetry.getRetry(clientId);
+            var getRetry = userDataRetryOutputPort.getRetry(clientId);
             var getUserDataRetryRedis = UserDataRetryRedis.builder().build();
 
             if (getRetry == null) {
@@ -156,7 +156,7 @@ public class OperatorsServices implements OperadoresInputPort {
                         .retry(1)
                         .status(false)
                         .build();
-                redisRetry.setRetry(clientId, sessionRetryDurationMinutes, getUserDataRetryRedis);
+                userDataRetryOutputPort.setRetry(clientId, sessionRetryDurationMinutes, getUserDataRetryRedis);
             } else {
 
                 if (getRetry.getRetry() >= maxRetries) {
@@ -171,7 +171,7 @@ public class OperatorsServices implements OperadoresInputPort {
                         .retry(getRetry.getRetry() + 1)
                         .status(false)
                         .build();
-                redisRetry.setRetry(clientId, sessionRetryDurationMinutes, getUserDataRetryRedis);
+                userDataRetryOutputPort.setRetry(clientId, sessionRetryDurationMinutes, getUserDataRetryRedis);
             }
 
             return BaseOperadoresResponse.builder().responseCode(ResponseCode.CONNECTION_PERCENTAGE_ERROR.getCode())
@@ -179,12 +179,12 @@ public class OperatorsServices implements OperadoresInputPort {
         }
 
         log.info("--- Start Redis ---");
-        var getRedisKey = redis.get(clientId);
+        var getRedisKey = userDataOutputPort.get(clientId);
         log.info("GetRedisKey: {}", getRedisKey);
         if (getRedisKey == null) {
-            redis.set(clientId, sessionDurationMinutes, mapper.toUserDataRedisAndUserDataRedis(responseMapper.getResponseContent()));
+            userDataOutputPort.set(clientId, sessionDurationMinutes, mapper.toUserDataRedisAndUserDataRedis(responseMapper.getResponseContent()));
         } else {
-            redis.update(clientId, mapper.toUserDataRedisAndUserDataRedis(responseMapper.getResponseContent()));
+            userDataOutputPort.update(clientId, mapper.toUserDataRedisAndUserDataRedis(responseMapper.getResponseContent()));
         }
         log.info("getRedisKey: {}", getRedisKey);
 

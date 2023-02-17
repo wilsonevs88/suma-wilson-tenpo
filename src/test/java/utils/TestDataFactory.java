@@ -5,9 +5,11 @@ import com.wilson.sumawilsontenpo.models.UserDataRedis;
 import com.wilson.sumawilsontenpo.models.UserDataRetryRedis;
 import com.wilson.sumawilsontenpo.models.request.OperatorsRequest;
 import com.wilson.sumawilsontenpo.models.response.BaseOperadoresResponse;
+import com.wilson.sumawilsontenpo.models.response.BasePercentageResponseDto;
 import com.wilson.sumawilsontenpo.models.response.BaseUserPageResponse;
 import com.wilson.sumawilsontenpo.models.response.BaseUserResponse;
 import com.wilson.sumawilsontenpo.models.response.OperadoresResponse;
+import com.wilson.sumawilsontenpo.models.response.PercentageResponseDto;
 import com.wilson.sumawilsontenpo.models.response.UserResponse;
 
 import java.sql.Timestamp;
@@ -107,6 +109,27 @@ public class TestDataFactory {
                 .build();
     }
 
+    public static OperatorsRequest getOperatorsValueUnoRequestNull() {
+        return OperatorsRequest.builder()
+                .clientUuid(USER_ID)
+                .valueDos(VALUE)
+                .build();
+    }
+
+    public static OperatorsRequest getOperatorsValueDosRequestNull() {
+        return OperatorsRequest.builder()
+                .clientUuid(USER_ID)
+                .valueUno(VALUE)
+                .build();
+    }
+
+    public static OperatorsRequest getOperatorsClientRequestNull() {
+        return OperatorsRequest.builder()
+                .valueUno(VALUE)
+                .valueDos(VALUE)
+                .build();
+    }
+
     public static BaseUserPageResponse getBaseUserPageResponse() {
         return BaseUserPageResponse.builder()
                 .responseCode(CODE_ERROR)
@@ -162,6 +185,14 @@ public class TestDataFactory {
                 .build();
     }
 
+    public static UserDataRetryRedis getUserDataRetryRedisMax3() {
+        return UserDataRetryRedis.builder()
+                .clientUuid(CLIENT_ID)
+                .retry(3)
+                .status(STATE)
+                .build();
+    }
+
     public static UserDataRedis getUserDataRedisOk() {
         return UserDataRedis.builder()
                 .id(ID_LONG)
@@ -177,6 +208,10 @@ public class TestDataFactory {
                 .build();
     }
 
+    public static UserDataRedis getUserDataRedisNull() {
+        return UserDataRedis.builder().build();
+    }
+
     public static PageRequest getPageRequest(){
         return PageRequest.of(TestDataFactory.PAGE, TestDataFactory.SIZE);
     }
@@ -185,5 +220,20 @@ public class TestDataFactory {
         return new PageImpl<>(getListUserEntity(), getPageRequest(), getListUserEntity().size());
     }
 
+    public static BasePercentageResponseDto getBasePercentageResponseDto(){
+        return BasePercentageResponseDto.builder()
+                .responseCode(CODE_ERROR)
+                .responseDescription(DESCRIPTION_ERROR)
+                .responseContent(getPercentageResponseDto())
+                .build();
+    }
+
+    public static PercentageResponseDto getPercentageResponseDto(){
+        return PercentageResponseDto.builder()
+                .clientUuid(CLIENT_ID)
+                .value(VALUE)
+                .status(STATE)
+                .build();
+    }
 
 }
