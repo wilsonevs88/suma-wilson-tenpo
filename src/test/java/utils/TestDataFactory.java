@@ -30,6 +30,7 @@ public class TestDataFactory {
     public static final String CLIENT_ID = "uuid_wilso_tenpo";
     public static final Integer CODE_OK = 0;
     public static final Integer CODE_ERROR = 99;
+    public static final Integer CODE_ERROR_1023 = 1023;
     public static final String DESCRIPTION_OK = "OK";
     public static final String DESCRIPTION_ERROR = "ERROR";
     public static final Integer RESPONSE_CODE_TEST = 5000;
@@ -228,6 +229,14 @@ public class TestDataFactory {
                 .build();
     }
 
+    public static BasePercentageResponseDto getBasePercentageResponseDto1023(){
+        return BasePercentageResponseDto.builder()
+                .responseCode(CODE_ERROR_1023)
+                .responseDescription(DESCRIPTION_ERROR)
+                .responseContent(getPercentageResponseDto())
+                .build();
+    }
+
     public static PercentageResponseDto getPercentageResponseDto(){
         return PercentageResponseDto.builder()
                 .clientUuid(CLIENT_ID)
@@ -235,5 +244,6 @@ public class TestDataFactory {
                 .status(STATE)
                 .build();
     }
+
 
 }

@@ -32,7 +32,7 @@ class OperatorsServicesTest {
     @Mock
     UserDataOutputPort userDataOutputPort;
     @Mock
-    UserDataRetryOutputPort redisRetry;
+    UserDataRetryOutputPort userDataRetryOutputPort;
     @Mock
     FeignClientPorcentaje feignClientPorcentaje;
     @Mock
@@ -53,7 +53,7 @@ class OperatorsServicesTest {
         when(userDataOutputPort.get(anyString())).thenReturn(TestDataFactory.getUserDataRedisOk());
         when(userOutputPort.getClientUuidAndState(anyString(), anyBoolean()))
                 .thenReturn(TestDataFactory.getUserEntity());
-        when(redisRetry.getRetry(anyString()))
+        when(userDataRetryOutputPort.getRetry(anyString()))
                 .thenReturn(TestDataFactory.getUserDataRetryRedis());
         var response = operatorsServices.getUserId(TestDataFactory.USER_ID);
         assertEquals(TestDataFactory.CODE_OK, response.getResponseCode());
@@ -66,7 +66,7 @@ class OperatorsServicesTest {
         when(userDataOutputPort.get(anyString())).thenReturn(TestDataFactory.getUserDataRedisOk());
         when(userOutputPort.getClientUuidAndState(anyString(), anyBoolean()))
                 .thenReturn(TestDataFactory.getUserEntity());
-        when(redisRetry.getRetry(anyString()))
+        when(userDataRetryOutputPort.getRetry(anyString()))
                 .thenReturn(null);
         var response = operatorsServices.getUserId(TestDataFactory.USER_ID);
         assertEquals(0, response.getResponseCode());
@@ -79,7 +79,7 @@ class OperatorsServicesTest {
         when(userDataOutputPort.get(anyString())).thenReturn(TestDataFactory.getUserDataRedisOk());
         when(userOutputPort.getClientUuidAndState(anyString(), anyBoolean()))
                 .thenReturn(TestDataFactory.getUserEntity());
-        when(redisRetry.getRetry(anyString()))
+        when(userDataRetryOutputPort.getRetry(anyString()))
                 .thenReturn(TestDataFactory.getUserDataRetryRedisMax3());
         var response = operatorsServices.getUserId(TestDataFactory.USER_ID);
         assertEquals(901, response.getResponseCode());
@@ -161,18 +161,40 @@ class OperatorsServicesTest {
     }
 
     @Test
-    void saveUserCode1023() {
+    void saveUserCode1023OKGetRetryNull() {
         ReflectionTestUtils.setField(operatorsServices, "maxRetries", maxRetries);
         ReflectionTestUtils.setField(operatorsServices, "sessionDurationMinutes", sessionDurationMinutes);
         when(feignClientPorcentaje.getPorcentaje(anyString(), anyString(), any()))
-                .thenReturn(TestDataFactory.getBasePercentageResponseDto());
-        when(userDataOutputPort.get(anyString()))
-                .thenReturn(TestDataFactory.getUserDataRedisNull());
-        when(userOutputPort.getClientActionAndClientUuidAndState(anyString(), anyString(), anyBoolean()))
-                .thenReturn(TestDataFactory.getListUserEntity());
+                .thenReturn(TestDataFactory.getBasePercentageResponseDto1023());
         var response =
                 operatorsServices.saveUser(TestDataFactory.AUTH, TestDataFactory.getOperatorsRequest());
-        assertEquals(TestDataFactory.CODE_ERROR, response.getResponseCode());
+        assertEquals(9000, response.getResponseCode());
+    }
+
+    @Test
+    void saveUserCode1023OKGetRetryOk() {
+        ReflectionTestUtils.setField(operatorsServices, "maxRetries", maxRetries);
+        ReflectionTestUtils.setField(operatorsServices, "sessionDurationMinutes", sessionDurationMinutes);
+        when(feignClientPorcentaje.getPorcentaje(anyString(), anyString(), any()))
+                .thenReturn(TestDataFactory.getBasePercentageResponseDto1023());
+        when(userDataRetryOutputPort.getRetry(TestDataFactory.USER_ID))
+                .thenReturn(TestDataFactory.getUserDataRetryRedis());
+        var response =
+                operatorsServices.saveUser(TestDataFactory.AUTH, TestDataFactory.getOperatorsRequest());
+        assertEquals(9000, response.getResponseCode());
+    }
+
+    @Test
+    void saveUserCode1023OKGetRetryMaRetries() {
+        ReflectionTestUtils.setField(operatorsServices, "maxRetries", maxRetries);
+        ReflectionTestUtils.setField(operatorsServices, "sessionDurationMinutes", sessionDurationMinutes);
+        when(feignClientPorcentaje.getPorcentaje(anyString(), anyString(), any()))
+                .thenReturn(TestDataFactory.getBasePercentageResponseDto1023());
+        when(userDataRetryOutputPort.getRetry(TestDataFactory.USER_ID))
+                .thenReturn(TestDataFactory.getUserDataRetryRedisMax3());
+        var response =
+                operatorsServices.saveUser(TestDataFactory.AUTH, TestDataFactory.getOperatorsRequest());
+        assertEquals(9002, response.getResponseCode());
     }
 
 }
