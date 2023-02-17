@@ -30,22 +30,7 @@ public class UserOutputAdapter implements UserOutputPort {
     public UserEntity getUserId(Long id) {
         try {
             var response = repository.findById(id);
-            log.info("getUserId {}", response.get());
-            if (response.isPresent()) {
                 return response.get();
-            } else {
-                return null;
-            }
-        } catch (Exception exception) {
-            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);
-        }
-    }
-
-    @Override
-    @Transactional
-    public List<UserEntity> getState(boolean state) {
-        try {
-            return repository.findByState(state);
         } catch (Exception exception) {
             throw new DatosInvalidosExcepcion(ResponseCode.ERROR_OBTAINING_USER_FROM_DATABASE.getDescription(), exception);
         }
@@ -108,11 +93,7 @@ public class UserOutputAdapter implements UserOutputPort {
 
     @Override
     public void saveUser(UserEntity user) {
-        try {
             repository.save(user);
-        } catch (Exception exception) {
-            throw new DatosInvalidosExcepcion(ResponseCode.ERROR_WHEN_SAVING_A_DATABASE_USER.getDescription(), exception);
-        }
     }
 
 }

@@ -30,9 +30,7 @@ public class UserDataRetryOutputAdapter implements UserDataRetryOutputPort {
     public UserDataRetryRedis getRetry(String idUser) {
         try {
             log.info("Obteniendo datos del usuario: {}", idUser);
-            getConection();
             var get = getKey(idUser);
-            log.info("Get redis: {}", get);
             return redisTemplate.opsForValue().get(get);
         } catch (Exception ex) {
             log.error("Error: {}", ex);
@@ -44,7 +42,6 @@ public class UserDataRetryOutputAdapter implements UserDataRetryOutputPort {
     public void setRetry(String idUser, Long timeoutMinutes, UserDataRetryRedis build) {
         try {
             log.info("Agregando datos del usuario: {}", idUser);
-            getConection();
             redisTemplate.opsForValue().set(getKey(
                             idUser),
                     build,
@@ -61,12 +58,5 @@ public class UserDataRetryOutputAdapter implements UserDataRetryOutputPort {
         return response;
     }
 
-    private void getConection() {
-        if (redisTemplate.getConnectionFactory().getConnection().ping().equals("PONG")) {
-            log.info("Conexión exitosa");
-        } else {
-            log.info("Error de conexión");
-        }
-    }
 
 }

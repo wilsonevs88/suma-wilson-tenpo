@@ -12,6 +12,4 @@ public interface UserDataOutputPort {
 
     void update(String idUser, UserDataRedis retriesCounter);
 
-    void delete(String idUser);
-
 }

@@ -36,7 +36,7 @@ public class UserHistoryInputAdapters {
             @PathVariable(value = "size") Integer size) {
         log.info("Starting get operator...");
         var response = userHistoryInputPort.completeSearchHistory(page, size);
-        iDdrPublisher.init(Constants.ACTION_GET_HISTORY_LIST, null, 0, false,
+        iDdrPublisher.init(Constants.ACTION_GET_HISTORY_LIST, "", 0, false,
                 response.getResponseCode(), response.getResponseDescription());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

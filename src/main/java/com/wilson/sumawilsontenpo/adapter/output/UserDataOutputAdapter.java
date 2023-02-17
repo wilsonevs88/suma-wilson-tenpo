@@ -30,9 +30,7 @@ public class UserDataOutputAdapter implements UserDataOutputPort {
     public UserDataRedis get(String idUser) {
         try {
             log.info("Obteniendo datos del usuario: {}", idUser);
-            getConection();
             var get = getKey(idUser);
-            log.info("Get redis: {}", get);
             return redisTemplate.opsForValue().get(get);
         } catch (Exception ex) {
             log.error("Error: {}", ex);
@@ -44,7 +42,6 @@ public class UserDataOutputAdapter implements UserDataOutputPort {
     public String getTime(String idUser) {
         try {
             log.info("Obteniendo tiempo de expiracion del usuario: {}", idUser);
-            getConection();
             var segundos = redisTemplate.getExpire(getKey(idUser));
             var minutos = segundos / 60;
             var segundosRestantes = segundos % 60;
@@ -59,7 +56,6 @@ public class UserDataOutputAdapter implements UserDataOutputPort {
     public void set(String idUser, Long timeoutMinutes, UserDataRedis build) {
         try {
             log.info("Agregando datos del usuario: {}", idUser);
-            getConection();
             redisTemplate.opsForValue().set(getKey(
                             idUser),
                     build,
@@ -74,7 +70,6 @@ public class UserDataOutputAdapter implements UserDataOutputPort {
     @Override
     public void update(String idUser, UserDataRedis retriesCounter) {
         log.info("Actualizando datos del usuario: {}", idUser);
-        getConection();
         final long expire = redisTemplate.getExpire(getKey(idUser));
         try {
             redisTemplate.opsForValue()
@@ -88,28 +83,10 @@ public class UserDataOutputAdapter implements UserDataOutputPort {
         }
     }
 
-    @Override
-    public void delete(String idUser) {
-        try {
-            getConection();
-            redisTemplate.delete(getKey(idUser));
-        } catch (Exception ex) {
-            log.error("Error: {}", ex);
-            throw new DatosInvalidosExcepcion(ResponseCode.FAILURE_DELETING_COUNTER_REDIS.getDescription(), ex);
-        }
-    }
-
     private String getKey(final String idUser) {
         var response = String.format("%s_%s", getKeyNameRedis, idUser);
         return response;
     }
 
-    private void getConection() {
-        if (redisTemplate.getConnectionFactory().getConnection().ping().equals("PONG")) {
-            log.info("Conexión exitosa");
-        } else {
-            log.info("Error de conexión");
-        }
-    }
 
 }
